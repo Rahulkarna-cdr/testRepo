@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ecommerce Store</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+     <!-- Load Vizme library -->
+     <script src="/vizme.js"></script>
+    
+     <!-- Initialize Vizme -->
+     <script>
+       window.vizme = new window.Vizme({
+         apiKey: 'mk_aa4c4204e98d4ff01c80b208502c213d2566e691db8490afce10b7b7a78d47ad',
+         endpoint: 'http://localhost:3000/api/v1/metrics',
+         autoTrack: true
+       });
+     </script>
+     
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+
