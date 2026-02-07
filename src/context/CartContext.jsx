@@ -10,36 +10,56 @@ export const useCart = () => {
   return context;
 };
 
+export const useWishlist = () => {
+  const { wishlistIds, toggleWishlist, isInWishlist } = useCart();
+  return { wishlistIds, toggleWishlist, isInWishlist };
+};
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [wishlistIds, setWishlistIds] = useState(["prod-001", "prod-003", "prod-006"]);
 
-  const addToCart = (product) => {
+  const isInWishlist = (productId) =>
+    wishlistIds.some((id) => String(id) === String(productId));
+
+  const toggleWishlist = (productId) => {
+    setWishlistIds((prev) => {
+      const id = String(productId);
+      if (prev.some((x) => String(x) === id)) {
+        return prev.filter((x) => String(x) !== id);
+      }
+      return [...prev, id];
+    });
+  };
+
+  const addToCart = (product, quantity = 1, selectedVariants = {}) => {
+    const id = product.id;
     if (window.vizme) {
-      window.vizme.increment("add_to_cart", 1, {
-        product_id: product.id.toString(),
+      window.vizme.increment("add_to_cart", quantity, {
+        product_id: String(id),
         product_name: product.name,
         category: product.category || "Unknown",
-        price: product.price.toString(),
+        price: String(product.price ?? 0),
       });
     }
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id);
+      const existingItem = prevItems.find((item) => String(item.id) === String(id));
       if (existingItem) {
         return prevItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          String(item.id) === String(id)
+            ? { ...item, quantity: item.quantity + quantity, selectedVariants: selectedVariants || item.selectedVariants }
             : item
         );
       }
-      return [...prevItems, { ...product, quantity: 1 }];
+      return [...prevItems, { ...product, quantity, selectedVariants }];
     });
   };
 
   const removeFromCart = (productId) => {
-  setCartItems((prevItems) =>
-    prevItems.filter((item) => item.id !== productId)
-  );  
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => String(item.id) !== String(productId))
+    );
   };
 
   const updateQuantity = (productId, quantity) => {
@@ -49,7 +69,7 @@ export const CartProvider = ({ children }) => {
     }
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
+        String(item.id) === String(productId) ? { ...item, quantity } : item
       )
     );
   };
@@ -60,7 +80,7 @@ export const CartProvider = ({ children }) => {
 
   const getCartTotal = () => {
     return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => total + (item.price ?? 0) * item.quantity,
       0
     );
   };
@@ -72,7 +92,12 @@ export const CartProvider = ({ children }) => {
   const placeOrder = (orderData) => {
     const order = {
       id: Date.now(),
-      items: [...cartItems],
+      items: cartItems.map((item) => ({
+        productId: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })),
       total: getCartTotal(),
       ...orderData,
       date: new Date().toISOString(),
@@ -85,6 +110,9 @@ export const CartProvider = ({ children }) => {
   const value = {
     cartItems,
     orders,
+    wishlistIds,
+    isInWishlist,
+    toggleWishlist,
     addToCart,
     removeFromCart,
     updateQuantity,
