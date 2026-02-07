@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 const OrderConfirmation = () => {
   const { id } = useParams();
   const { orders } = useCart();
-  const order = orders.find((o) => o.id === parseInt(id));
+  const order = orders.find((o) => String(o.id) === String(id));
 
   if (!order) {
     return (
@@ -43,7 +43,7 @@ const OrderConfirmation = () => {
           Order Placed Successfully!
         </h1>
         <p className="text-gray-600 mb-6">
-          Thank you for your order. Your order ID is <strong>#{order.id}</strong>
+          Thank you for your order. Your order ID is <strong>#{String(order.id)}</strong>
         </p>
         <div className="bg-gray-50 rounded-lg p-6 mb-6 text-left">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">
