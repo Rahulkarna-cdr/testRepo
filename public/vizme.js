@@ -4,6 +4,7 @@
   
   class VizmeClient {
       constructor(config) {
+        this.configReady = Promise.resolve()
         this.apiKey = config.apiKey;
         this.endpoint = config.endpoint || 'http://localhost:3000/api/v1/metrics';
         this.batchSize = config.batchSize || 10;
@@ -67,19 +68,22 @@
         return this;
       }
       
-      increment(name, value = 1, labels = {}) {
+      async increment(name, value = 1, labels = {}) {
+        await this.configReady; //wait forconfig to load first
         // only use counter as a fallback when no config exists
         const defaultType = this.metricConfigs[name] ? undefined : 'counter';
         return this.track(name, value, { ...labels, _type: defaultType, _operation: 'increment' });
       }
       
-      decrement(name, value = 1, labels = {}) {
+      async decrement(name, value = 1, labels = {}) {
+        await this.configReady; //wait forconfig to load first
         //use gauge as a fallback only when no config exists
         const defaultType = this.metricConfigs[name] ? undefined : 'gauge';
         return this.track(name, -Math.abs(value), { ...labels, _type: defaultType, _operation: 'decrement' });
       }
       
-      set(name, value, labels = {}) {
+      async set(name, value, labels = {}) {
+        await this.configReady; //wait forconfig to load first
         // only use gauge as a fallback when no config exists
         const defaultType = this.metricConfigs[name] ? undefined : "gauge";
         return this.track(name, value, { ...labels, _type: defaultType, _operation: 'set' });
@@ -88,7 +92,7 @@
       sanitizeLabels(labels) {
         const sanitized = {};
         for (const [key, value] of Object.entries(labels)) {
-          if (key !== '_type') {
+          if (key !== '_type' && key !== '_operation') {
             sanitized[String(key)] = String(value);
           }
         }
@@ -545,14 +549,15 @@
         });
   
             // Auto-fetch metric configs from backend
-      if (this.config.autoFetchConfigs && !config.metricConfigs) {
-        this.fetchMetricConfigs().then(configs => {
-          // Update client with fetched configs
+      if (this.config.autofetchConfigs && !config.metricConfigs) {
+        this.configReady = this.fetchMetricConfigs().then(configs=>{
           this.client.metricConfigs = configs;
-        }).catch(error => {
+        })
+        .catch(error => {
           console.warn('Vizme: Could not fetch metric configs, using defaults', error);
-          // Continue with empty configs (will use method defaults)
         });
+  
+        this.client.configReady = this.configReady;
       }
         
         // Initialize auto-tracker if enabled
