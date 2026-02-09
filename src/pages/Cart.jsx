@@ -64,8 +64,8 @@ const Cart = () => {
                     <button                     
                     onClick={() => {
                         // Track decrement when clicking minus button
-                        if (window.vizme) {
-                          window.vizme.decrement("add_to_cart", 1, {
+                        if (window.MetricsTracker) {
+                          window.MetricsTracker.decrement("add_to_cart", 1, {
                             product_id: item.id.toString(),
                             product_name: item.name,
                             category: item.category || "Unknown",
@@ -82,8 +82,8 @@ const Cart = () => {
                     <button
                       onClick={() => {
                         // Track increment when clicking plus button
-                        if (window.vizme) {
-                          window.vizme.increment("add_to_cart", 1, {
+                        if (window.MetricsTracker) {
+                          window.MetricsTracker.increment("add_to_cart", 1, {
                             product_id: item.id.toString(),
                             product_name: item.name,
                             category: item.category || "Unknown",
@@ -105,8 +105,8 @@ const Cart = () => {
               <button
                 onClick={() => {
                   // Track decrement by full quantity when removing item
-                  if (window.vizme) {
-                    window.vizme.decrement("add_to_cart", item.quantity, {
+                  if (window.MetricsTracker) {
+                    window.MetricsTracker.decrement("add_to_cart", item.quantity, {
                       product_id: item.id.toString(),
                       product_name: item.name,
                       category: item.category || "Unknown",

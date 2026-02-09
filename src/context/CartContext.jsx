@@ -15,8 +15,8 @@ export const CartProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
 
   const addToCart = (product) => {
-    if (window.vizme) {
-      window.vizme.increment("add_to_cart", 1, {
+    if (window.MetricsTracker) {
+      window.MetricsTracker.increment("add_to_cart", 1, {
         product_id: product.id.toString(),
         product_name: product.name,
         category: product.category || "Unknown",

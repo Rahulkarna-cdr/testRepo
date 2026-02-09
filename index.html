@@ -5,22 +5,19 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ecommerce Store</title>
+    <script>
+      // VIZME Analytics - add_to_cart
+// Paste this in your main JavaScript file
+
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'start':Date.now()});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src='http://localhost:3000/api/v1/tracker.js?k=mk_636d000d0f0c657e19aed668de2d0514b312473d85bce3bbdd4a63e3213e093f&a=1&c=1';f.parentNode.insertBefore(j,f);})(window,document,'script','metricsTracker');
+
+// Optional: Track custom events
+// window.trackMetric('metric_name', value, { label: 'value' });
+    </script>
   </head>
 
   <body>
     <div id="root"></div>
-     <!-- Load Vizme library -->
-     <script src="/vizme.js"></script>
-    
-     <!-- Initialize Vizme -->
-     <script>
-       window.vizme = new window.Vizme({
-         apiKey: 'mk_72ec504e3914f43cdb45cb3624a128efc1991a1243fdf92c4aaa9cc9aad7c2ac',         
-         endpoint: 'http://192.168.68.73:3000/api/v1/metrics',
-         autoTrack: true
-       });
-     </script>
-     
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
