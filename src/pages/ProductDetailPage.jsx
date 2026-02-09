@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { getProductById, getProductsByCategory } from '../data/products';
+import { getProductById, getProductsByCategory } from '../services/productService';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/CartContext';
 import Breadcrumb from '../components/layout/Breadcrumb';

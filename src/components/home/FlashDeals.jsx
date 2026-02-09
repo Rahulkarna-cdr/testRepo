@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { getFlashDeals } from '../../data/products';
+import { getFlashDeals } from '../../services/productService';
 import ProductCard from '../common/ProductCard';
 import { useWishlist } from '../../context/CartContext';
 

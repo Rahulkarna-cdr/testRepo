@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import RatingStars from './RatingStars';
 import PriceTag from './PriceTag';
+import { useCart } from '../../context/CartContext';
 
 const ProductCard = ({
   product,
@@ -9,12 +10,13 @@ const ProductCard = ({
   onQuickView,
   inWishlist = false
 }) => {
+  const { addToCart } = useCart();
   const [imageLoaded, setImageLoaded] = useState(false);
   const image = Array.isArray(product.images) ? product.images[0] : product.image;
   const productId = product.id;
   const price = product.price ?? 0;
   const originalPrice = product.originalPrice;
-  const discount = product.discount;
+  const discount = product.discount ?? 0;
   const rating = product.rating ?? 0;
   const reviewCount = product.reviewCount ?? 0;
   const linkTo = `/product/${productId}`;
@@ -23,6 +25,12 @@ const ProductCard = ({
     e.preventDefault();
     e.stopPropagation();
     onAddToWishlist?.(productId);
+  };
+
+  const handleAddToCartClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1, {});
   };
 
   return (
@@ -91,8 +99,16 @@ const ProductCard = ({
             originalPrice={originalPrice}
             discount={discount}
           />
-          {product.inStock === false && (
+          {product.inStock === false ? (
             <p className="text-xs text-red-600 font-medium mt-2">Out of Stock</p>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAddToCartClick}
+              className="mt-2 w-full py-1.5 text-xs font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
+            >
+              Add to cart
+            </button>
           )}
         </div>
       </Link>

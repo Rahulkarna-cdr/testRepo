@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { getCategoryById } from '../data/categories';
-import { getProductsByCategory, products } from '../data/products';
+import { getProductsByCategory, getBrands } from '../services/productService';
 import Breadcrumb from '../components/layout/Breadcrumb';
 import ProductGrid from '../components/product/ProductGrid';
 import SortDropdown from '../components/product/SortDropdown';
@@ -46,22 +46,28 @@ const filterProducts = (list, filters) => {
   });
 };
 
+const PAGE_SIZE = 24;
+
 const ProductListPage = () => {
   const { categoryId, subcategoryId } = useParams();
   const [sortBy, setSortBy] = useState('popularity');
   const [filters, setFilters] = useState({});
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const category = getCategoryById(categoryId);
   const rawProducts = useMemo(
     () => getProductsByCategory(categoryId, subcategoryId || null),
     [categoryId, subcategoryId]
   );
-  const brands = useMemo(
-    () => [...new Set(products.map((p) => p.brand).filter(Boolean))].sort(),
-    []
-  );
+  const brands = useMemo(() => getBrands(), []);
   const filtered = useMemo(() => filterProducts(rawProducts, filters), [rawProducts, filters]);
   const sorted = useMemo(() => sortProducts(filtered, sortBy), [filtered, sortBy]);
+  const displayed = useMemo(() => sorted.slice(0, visibleCount), [sorted, visibleCount]);
+  const hasMore = sorted.length > visibleCount;
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [categoryId, subcategoryId, filters, sortBy]);
 
   if (!category) {
     return (
@@ -104,7 +110,18 @@ const ProductListPage = () => {
               </p>
               <SortDropdown value={sortBy} onChange={setSortBy} />
             </div>
-            <ProductGrid products={sorted} />
+            <ProductGrid products={displayed} />
+            {hasMore && (
+              <div className="mt-6 text-center">
+                <button
+                  type="button"
+                  onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                  className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Load more
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </main>

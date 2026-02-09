@@ -1,19 +1,25 @@
 import { useParams, Link } from 'react-router-dom';
 import { getCategoryById } from '../data/categories';
 import Breadcrumb from '../components/layout/Breadcrumb';
-import CategoryCard from '../components/common/CategoryCard';
 import ProductGrid from '../components/product/ProductGrid';
-import { getProductsByCategory } from '../data/products';
-import { useMemo } from 'react';
+import { getProductsByCategory } from '../services/productService';
+import { useMemo, useState, useEffect } from 'react';
+
+const PAGE_SIZE = 24;
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const category = getCategoryById(categoryId);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const products = useMemo(
     () => (categoryId ? getProductsByCategory(categoryId) : []),
     [categoryId]
   );
+  const displayed = useMemo(() => products.slice(0, visibleCount), [products, visibleCount]);
+  const hasMore = products.length > visibleCount;
+
+  useEffect(() => setVisibleCount(PAGE_SIZE), [categoryId]);
 
   if (!category) {
     return (
@@ -54,7 +60,18 @@ const CategoryPage = () => {
 
         <section>
           <h2 className="text-lg font-semibold text-gray-700 mb-4">All products</h2>
-          <ProductGrid products={products} />
+          <ProductGrid products={displayed} />
+          {hasMore && (
+            <div className="mt-6 text-center">
+              <button
+                type="button"
+                onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+                className="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              >
+                Load more
+              </button>
+            </div>
+          )}
         </section>
       </main>
     </div>

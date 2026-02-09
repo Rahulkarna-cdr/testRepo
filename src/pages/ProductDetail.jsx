@@ -1,12 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { products } from '../data/products';
+import { getProductById } from '../services/productService';
 import { useCart } from '../context/CartContext';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
-  const product = products.find((p) => p.id === parseInt(id));
+  const product = getProductById(id);
 
   if (!product) {
     return (
@@ -52,7 +52,7 @@ const ProductDetail = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <img
-            src={product.image}
+            src={(Array.isArray(product.images) && product.images[0]) || product.image}
             alt={product.name}
             className="w-full h-96 object-cover"
           />
@@ -64,7 +64,7 @@ const ProductDetail = () => {
             </h1>
             <p className="text-gray-500 mb-4">{product.category}</p>
             <p className="text-4xl font-bold text-blue-600 mb-4">
-              ${product.price.toFixed(2)}
+              ${(product.price ?? 0).toFixed(2)}
             </p>
             <p className="text-gray-700 leading-relaxed">
               {product.description}

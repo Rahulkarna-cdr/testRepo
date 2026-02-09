@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { currentUser } from '../../data/users';
-import { getProductById } from '../../data/products';
+import { getProductById } from '../../services/productService';
 import ProductCard from '../common/ProductCard';
 import { useWishlist } from '../../context/CartContext';
 

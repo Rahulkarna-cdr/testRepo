@@ -1,4 +1,4 @@
-import { getTrendingProducts } from '../../data/products';
+import { getTrendingProducts } from '../../services/productService';
 import ProductCard from '../common/ProductCard';
 import { useWishlist } from '../../context/CartContext';
 

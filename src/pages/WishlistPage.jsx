@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { getProductById } from '../data/products';
+import { getProductById } from '../services/productService';
 import ProductCard from '../components/common/ProductCard';
 import Button from '../components/common/Button';
 

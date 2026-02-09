@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { ProductsProvider } from './context/ProductsContext';
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -19,7 +20,8 @@ function App() {
   return (
     <CartProvider>
       <Router>
-        <Routes>
+        <ProductsProvider>
+          <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<HomePage />} />
             <Route path="search" element={<SearchPage />} />
@@ -39,6 +41,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
+        </ProductsProvider>
       </Router>
     </CartProvider>
   );

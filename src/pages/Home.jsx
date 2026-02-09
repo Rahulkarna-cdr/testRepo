@@ -1,7 +1,8 @@
-import { products } from '../data/products';
+import { getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 
 const Home = () => {
+  const products = getProducts();
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Our Products</h1>
