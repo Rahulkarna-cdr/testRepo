@@ -63,13 +63,41 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (productId, quantity) => {
+    const item = cartItems.find((i) => String(i.id) === String(productId));
+    const labels = item
+      ? {
+          product_id: String(item.id),
+          product_name: item.name ?? "Unknown",
+          category: item.category ?? "Unknown",
+          price: String(item.price ?? 0),
+        }
+      : {};
+
     if (quantity <= 0) {
-      removeFromCart(productId);
+      if (item && item.quantity > 0 && typeof window !== "undefined" && window.vizme) {
+        window.vizme.decrement("add_to_cart", item.quantity, labels);
+        window.vizme.flush();
+      }
+      setCartItems((prevItems) =>
+        prevItems.filter((i) => String(i.id) !== String(productId))
+      );
       return;
     }
+
+    const oldQty = item?.quantity ?? 0;
+    const delta = quantity - oldQty;
+    if (delta !== 0 && typeof window !== "undefined" && window.vizme) {
+      if (delta > 0) {
+        window.vizme.increment("add_to_cart", delta, labels);
+      } else {
+        window.vizme.decrement("add_to_cart", -delta, labels);
+      }
+      window.vizme.flush();
+    }
+
     setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        String(item.id) === String(productId) ? { ...item, quantity } : item
+      prevItems.map((i) =>
+        String(i.id) === String(productId) ? { ...i, quantity } : i
       )
     );
   };
