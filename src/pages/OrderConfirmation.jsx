@@ -1,11 +1,27 @@
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useEffect, useRef } from 'react';
 
 const OrderConfirmation = () => {
   const { id } = useParams();
   const { orders } = useCart();
   const order = orders.find((o) => String(o.id) === String(id));
+  const hasTracked = useRef(false);
 
+  // Track products sold when order confirmation page loads
+  useEffect(() => {
+    if (order && window.vizme && !hasTracked.current) {
+      hasTracked.current = true;
+      order.items.forEach((item) => {
+        window.vizme.increment("products_sold", item.quantity, {
+          product_id: String(item.productId || item.id),
+          product_name: item.name || "Unknown",
+        });
+      });
+      window.vizme.flush();
+    }
+  }, [order]);
+  
   if (!order) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
@@ -73,7 +89,7 @@ const OrderConfirmation = () => {
             <h3 className="font-semibold text-gray-800 mb-2">Items Ordered:</h3>
             <ul className="space-y-1">
               {order.items.map((item) => (
-                <li key={item.id} className="flex justify-between text-sm">
+                <li key={item.productId} className="flex justify-between text-sm">
                   <span className="text-gray-600">
                     {item.name} x{item.quantity}
                   </span>

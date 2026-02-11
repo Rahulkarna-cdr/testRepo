@@ -54,7 +54,7 @@ const ProductDetailPage = () => {
 
   const handleBuyNow = () => {
     addToCart(product, quantity, selectedVariants);
-    navigate('/cart');
+    navigate('/checkout');
   };
 
   const related = getProductsByCategory(product.category).filter((p) => p.id !== product.id).slice(0, 4);
