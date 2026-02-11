@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import { getProductById, getProductsByCategory } from '../services/productService';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/CartContext';
@@ -22,6 +22,17 @@ const ProductDetailPage = () => {
 
   const product = getProductById(id);
 
+    // Track product view
+    useEffect(() => {
+      if (product && window.vizme) {
+        window.vizme.increment("product_view", 1, {
+          product_id: String(product.id),
+          product_name: product.name,
+          category: product.category || "Unknown",
+        });
+      }
+    }, [product]);
+
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-12 text-center">
@@ -43,7 +54,7 @@ const ProductDetailPage = () => {
 
   const handleBuyNow = () => {
     addToCart(product, quantity, selectedVariants);
-    navigate('/cart');
+    navigate('/checkout');
   };
 
   const related = getProductsByCategory(product.category).filter((p) => p.id !== product.id).slice(0, 4);
