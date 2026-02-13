@@ -1,6 +1,16 @@
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useEffect, useRef } from 'react';
+import { formatPriceNPR } from '../utils/currency';
+
+// Readable payment method names
+const PAYMENT_LABELS = {
+  esewa: 'eSewa',
+  khalti: 'Khalti',
+  paypal: 'PayPal',
+  cod: 'Cash on Delivery',
+  card: 'Credit/Debit Card',
+};
 
 const OrderConfirmation = () => {
   const { id } = useParams();
@@ -87,8 +97,8 @@ const OrderConfirmation = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Payment Method:</span>
-              <span className="text-gray-800 font-medium capitalize">
-                {order.paymentMethod}
+              <span className="text-gray-800 font-medium">
+                {PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod}
               </span>
             </div>
           </div>
@@ -101,14 +111,14 @@ const OrderConfirmation = () => {
                     {item.name} x{item.quantity}
                   </span>
                   <span className="text-gray-800">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {formatPriceNPR(item.price * item.quantity)}
                   </span>
                 </li>
               ))}
             </ul>
             <div className="flex justify-between text-lg font-bold text-gray-800 mt-4 pt-4 border-t">
               <span>Total:</span>
-              <span>${order.total.toFixed(2)}</span>
+              <span>{formatPriceNPR(order.total)}</span>
             </div>
           </div>
         </div>

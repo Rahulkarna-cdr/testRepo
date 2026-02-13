@@ -1,12 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
+import { formatPriceNPR } from '../utils/currency';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const { showToast } = useToast();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     addToCart(product);
+    // Show confirmation toast with product name
+    showToast(`"${product.name}" added to cart successfully!`, 'success');
   };
 
   return (
@@ -28,7 +33,7 @@ const ProductCard = ({ product }) => {
           </p>
           <div className="flex items-center justify-between">
             <span className="text-2xl font-bold text-blue-600">
-              ${product.price.toFixed(2)}
+              {formatPriceNPR(product.price)}
             </span>
             <button
               onClick={handleAddToCart}

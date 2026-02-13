@@ -1,4 +1,9 @@
+/**
+ * CartSummary — Order summary sidebar in the cart page.
+ * Prices displayed in Nepali Rupees (NPR).
+ */
 import { Link } from 'react-router-dom';
+import { formatPriceNPR } from '../../utils/currency';
 
 const CartSummary = ({ subtotal, discount = 0, itemCount }) => {
   const total = subtotal - discount;
@@ -9,12 +14,12 @@ const CartSummary = ({ subtotal, discount = 0, itemCount }) => {
       <div className="space-y-2 mb-4">
         <div className="flex justify-between text-gray-600">
           <span>Subtotal ({itemCount} items)</span>
-          <span>${Number(subtotal).toFixed(2)}</span>
+          <span>{formatPriceNPR(subtotal)}</span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between text-emerald-600">
             <span>Discount</span>
-            <span>-${Number(discount).toFixed(2)}</span>
+            <span>-{formatPriceNPR(discount)}</span>
           </div>
         )}
         <div className="flex justify-between text-gray-600">
@@ -25,7 +30,7 @@ const CartSummary = ({ subtotal, discount = 0, itemCount }) => {
       <div className="border-t pt-4 mt-4">
         <div className="flex justify-between text-lg font-bold text-gray-900">
           <span>Total</span>
-          <span>${Number(total).toFixed(2)}</span>
+          <span>{formatPriceNPR(total)}</span>
         </div>
       </div>
       <Link

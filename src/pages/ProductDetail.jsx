@@ -1,11 +1,14 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/productService';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
+import { formatPriceNPR } from '../utils/currency';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, cartItems } = useCart();
+  const { showToast } = useToast();
   const product = getProductById(id);
 
   if (!product) {
@@ -27,6 +30,8 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     addToCart(product);
+    // Show confirmation toast with product name
+    showToast(`"${product.name}" added to cart successfully!`, 'success');
   };
 
   return (
@@ -64,7 +69,7 @@ const ProductDetail = () => {
             </h1>
             <p className="text-gray-500 mb-4">{product.category}</p>
             <p className="text-4xl font-bold text-blue-600 mb-4">
-              ${(product.price ?? 0).toFixed(2)}
+              {formatPriceNPR(product.price)}
             </p>
             <p className="text-gray-700 leading-relaxed">
               {product.description}

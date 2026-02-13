@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import { getProductById } from '../services/productService';
 import ProductCard from '../components/common/ProductCard';
 import Button from '../components/common/Button';
 
 const WishlistPage = () => {
   const { wishlistIds, toggleWishlist, addToCart } = useCart();
+  const { showToast } = useToast();
   const products = wishlistIds
     .map((id) => getProductById(id))
     .filter(Boolean);
@@ -54,7 +56,10 @@ const WishlistPage = () => {
               <div className="mt-2">
                 <button
                   type="button"
-                  onClick={() => addToCart(product)}
+                  onClick={() => {
+                    addToCart(product);
+                    showToast(`"${product.name}" moved to cart!`, 'success');
+                  }}
                   className="w-full py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
                 >
                   Move to Cart
