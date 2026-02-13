@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { ProductsProvider } from './context/ProductsContext';
+import { ToastProvider } from './context/ToastContext';
 import Layout from './components/layout/Layout';
 import HomePage from './pages/HomePage';
 import CategoryPage from './pages/CategoryPage';
@@ -18,6 +19,7 @@ import SettingsPage from './pages/account/SettingsPage';
 
 function App() {
   return (
+    <ToastProvider>
     <CartProvider>
       <Router>
         <ProductsProvider>
@@ -44,6 +46,7 @@ function App() {
         </ProductsProvider>
       </Router>
     </CartProvider>
+    </ToastProvider>
   );
 }
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import RatingStars from './RatingStars';
 import PriceTag from './PriceTag';
 import { useCart } from '../../context/CartContext';
+import { useToast } from '../../context/ToastContext';
 
 const ProductCard = ({
   product,
@@ -11,6 +12,7 @@ const ProductCard = ({
   inWishlist = false
 }) => {
   const { addToCart } = useCart();
+  const { showToast } = useToast();
   const [imageLoaded, setImageLoaded] = useState(false);
   const image = Array.isArray(product.images) ? product.images[0] : product.image;
   const productId = product.id;
@@ -31,6 +33,8 @@ const ProductCard = ({
     e.preventDefault();
     e.stopPropagation();
     addToCart(product, 1, {});
+    // Show confirmation toast with product name
+    showToast(`"${product.name}" added to cart successfully!`, 'success');
   };
 
   return (

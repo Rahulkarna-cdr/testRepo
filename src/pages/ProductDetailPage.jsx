@@ -3,6 +3,7 @@ import { useState, useEffect} from 'react';
 import { getProductById, getProductsByCategory } from '../services/productService';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import Breadcrumb from '../components/layout/Breadcrumb';
 import ImageGallery from '../components/product/ImageGallery';
 import VariantSelector from '../components/product/VariantSelector';
@@ -17,6 +18,7 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const { showToast } = useToast();
   const [selectedVariants, setSelectedVariants] = useState({});
   const [quantity, setQuantity] = useState(1);
 
@@ -50,10 +52,13 @@ const ProductDetailPage = () => {
 
   const handleAddToCart = () => {
     addToCart(product, quantity, selectedVariants);
+    // Toast notification with product name
+    showToast(`"${product.name}" added to cart successfully!`, 'success');
   };
 
   const handleBuyNow = () => {
     addToCart(product, quantity, selectedVariants);
+    showToast(`"${product.name}" added to cart — redirecting to checkout.`, 'info');
     navigate('/checkout');
   };
 
