@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useEffect, useRef } from 'react';
-import { formatPriceNPR } from '../utils/currency';
+import { convertToNPR, formatPriceNPR } from '../utils/currency';
 
 // Readable payment method names
 const PAYMENT_LABELS = {
@@ -22,6 +22,8 @@ const OrderConfirmation = () => {
   useEffect(() => {
     if (order && window.vizme && !hasTracked.current) {
       hasTracked.current = true;
+
+      //track individual products sold
       order.items.forEach((item) => {
         window.vizme.increment("products_sold", item.quantity, {
           product_id: String(item.productId || item.id),
@@ -30,7 +32,7 @@ const OrderConfirmation = () => {
       });
 
       //track total revenue for the order
-      window.vizme.increment("revenue", order.total, {
+      window.vizme.increment("revenue", convertToNPR(order.total), {
         order_id: String(order.id),
         payment_method: order.paymentMethod,
         item_count: order.items.reduce((sum, item) => sum + item.quantity, 0).toString(),

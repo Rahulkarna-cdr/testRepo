@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import { convertToNPR } from "../utils/currency";
 
 const CartContext = createContext();
 
@@ -36,11 +37,13 @@ export const CartProvider = ({ children }) => {
   const addToCart = (product, quantity = 1, selectedVariants = {}) => {
     const id = product.id;
     if (window.vizme) {
+      // Convert USD price to NPR before tracking
+      const priceInNPR = convertToNPR(product.price ?? 0);
       window.vizme.increment("add_to_cart", quantity, {
         product_id: String(id),
         product_name: product.name,
         category: product.category || "Unknown",
-        price: String(product.price ?? 0),
+        price: String(priceInNPR), // Now in NPR
       });
     }
     setCartItems((prevItems) => {

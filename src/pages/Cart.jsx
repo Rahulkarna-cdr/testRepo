@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { convertToNPR } from '../utils/currency';
 
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity, getCartTotal } = useCart();
@@ -69,7 +70,7 @@ const Cart = () => {
                             product_id: item.id.toString(),
                             product_name: item.name,
                             category: item.category || "Unknown",
-                            price: item.price.toString(),
+                            price: String(convertToNPR(item.price)),  
                           });
                         }
                         updateQuantity(item.id, item.quantity - 1);
@@ -87,7 +88,7 @@ const Cart = () => {
                             product_id: item.id.toString(),
                             product_name: item.name,
                             category: item.category || "Unknown",
-                            price: item.price.toString(),
+                            price: String(convertToNPR(item.price)),  
                           });
                         }
                         updateQuantity(item.id, item.quantity + 1);
@@ -110,7 +111,7 @@ const Cart = () => {
                       product_id: item.id.toString(),
                       product_name: item.name,
                       category: item.category || "Unknown",
-                      price: item.price.toString(),
+                      price: String(convertToNPR(item.price)),  
                     });
                   }
                   removeFromCart(item.id);
