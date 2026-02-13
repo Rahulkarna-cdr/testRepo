@@ -15,8 +15,15 @@ const OrderConfirmation = () => {
       order.items.forEach((item) => {
         window.vizme.increment("products_sold", item.quantity, {
           product_id: String(item.productId || item.id),
-          product_name: item.name || "Unknown",
+          product_name: item.name
         });
+      });
+
+      //track total revenue for the order
+      window.vizme.increment("revenue", order.total, {
+        order_id: String(order.id),
+        payment_method: order.paymentMethod,
+        item_count: order.items.reduce((sum, item) => sum + item.quantity, 0).toString(),
       });
       window.vizme.flush();
     }
