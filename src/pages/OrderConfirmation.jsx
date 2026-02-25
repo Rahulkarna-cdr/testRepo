@@ -33,9 +33,6 @@ const OrderConfirmation = () => {
 
       //track total revenue for the order
       window.vizme.increment("revenue", convertToNPR(order.total), {
-        order_id: String(order.id),
-        payment_method: order.paymentMethod,
-        item_count: order.items.reduce((sum, item) => sum + item.quantity, 0).toString(),
       });
       window.vizme.flush();
     }
@@ -118,13 +115,7 @@ const OrderConfirmation = () => {
                 </li>
               ))}
             </ul>
-            <div className="flex justify-between text-sm text-gray-600 mt-4 pt-4 border-t">
-              <span>Total Quantity:</span>
-              <span className="font-medium text-gray-800">
-                {order.items.reduce((sum, item) => sum + item.quantity, 0)} items
-              </span>
-            </div>
-            <div className="flex justify-between text-lg font-bold text-gray-800 mt-2">
+            <div className="flex justify-between text-lg font-bold text-gray-800 mt-4 pt-4 border-t">
               <span>Total:</span>
               <span>{formatPriceNPR(order.total)}</span>
             </div>
